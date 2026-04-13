@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skip the Small Talk</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #000000;
+      --card: #0a0a0a;
+      --border: #ffffff;
+      --text: #ffffff;
+      --muted: #bfbfbf;
+      --hover: #141414;
+      --active: #ffffff;
+      --active-text: #000000;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100%;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 720px;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background: var(--card);
+      padding: 24px;
+    }
+
+    .eyebrow {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.25rem);
+      line-height: 1;
+      letter-spacing: -0.04em;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      margin-top: 12px;
+      margin-bottom: 28px;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.5;
+      max-width: 540px;
+    }
+
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .category-btn,
+    .action-btn {
+      appearance: none;
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: transparent;
+      color: var(--text);
+      padding: 15px 16px;
+      font-size: 0.98rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+    }
+
+    .category-btn:hover,
+    .action-btn:hover {
+      background: var(--hover);
+      transform: translateY(-1px);
+    }
+
+    .category-btn.active {
+      background: var(--active);
+      color: var(--active-text);
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .question-box {
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 22px;
+      min-height: 240px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: #000000;
+    }
+
+    .question-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .category-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+    }
+
+    .counter {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .question-text {
+      font-size: clamp(1.35rem, 2.8vw, 2rem);
+      line-height: 1.45;
+      letter-spacing: -0.02em;
+      min-height: 120px;
+      display: flex;
+      align-items: center;
+    }
+
+    .footer-note {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .copied-message {
+      margin-top: 12px;
+      font-size: 0.88rem;
+      color: var(--muted);
+      text-align: center;
+      min-height: 20px;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 16px;
+      }
+
+      .app {
+        padding: 18px;
+        border-radius: 20px;
+      }
+
+      .categories {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        grid-template-columns: 1fr;
+      }
+
+      .question-box {
+        min-height: 260px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <div class="eyebrow">Conversation App</div>
+    <h1>Skip the Small Talk</h1>
+    <p class="subtitle">
+      Pick a vibe, get a question, and start a better conversation.
+    </p>
+
+    <section class="categories">
+      <button class="category-btn active" data-category="justVibes">Just Vibes</button>
+      <button class="category-btn" data-category="gettingReal">Getting Real</button>
+      <button class="category-btn" data-category="deepEnd">Deep End</button>
+    </section>
+
+    <section class="actions">
+      <button class="action-btn" id="generateBtn">Generate Question</button>
+      <button class="action-btn" id="copyBtn">Copy Question</button>
+    </section>
+
+    <section class="question-box">
+      <div>
+        <div class="question-meta">
+          <div class="category-label" id="categoryLabel">Just Vibes</div>
+          <div class="counter" id="questionCounter">0 / 40</div>
+        </div>
+
+        <div class="question-text" id="questionText">
+          Tap “Generate Question” to get started.
+        </div>
+      </div>
+    </section>
+
+    <div class="copied-message" id="copiedMessage"></div>
+
+    <p class="footer-note">
+      Great for dates, friendships, road trips, late-night talks, and getting to know someone better.
+    </p>
+  </main>
+
+  <script>
+    const questions = {
+      justVibes: [
+        "What kind of first impression do people usually get from you?",
+        "What is your ideal way to spend a free weekend?",
+        "What kind of music do you always come back to?",
+        "What show or movie can you watch over and over?",
+        "What is your go-to comfort food?",
+        "Are you more of a morning person or night person?",
+        "What kind of weather matches your mood best?",
+        "What is your favorite way to relax after a long day?",
+        "What is one place you would love to travel to?",
+        "What kind of food do you crave the most?",
+        "What does your perfect day off look like?",
+        "What is one thing you have been really into lately?",
+        "What type of people do you naturally click with?",
+        "What is your favorite kind of restaurant?",
+        "What is your go-to coffee or drink order?",
+        "Do you prefer staying in or going out?",
+        "What is one thing that always lifts your mood?",
+        "What hobby would you like to get better at?",
+        "What is something simple that brings you joy?",
+        "What kind of vibe do you like your space to have?",
+        "What is one random skill you have?",
+        "What season feels most like you?",
+        "What is your favorite type of social setting?",
+        "What do you usually spend too much money on?",
+        "What app do you use the most?",
+        "What is your favorite way to celebrate good news?",
+        "What does your ideal vacation look like?",
+        "What is one thing on your bucket list?",
+        "What is a small luxury you love?",
+        "What kind of clothes do you feel best in?",
+        "What is something people are usually surprised to learn about you?",
+        "What is your favorite snack lately?",
+        "What kind of energy do you enjoy being around?",
+        "What is your go-to lazy meal?",
+        "What is one thing you never get tired of talking about?",
+        "What kind of gifts do you actually like receiving?",
+        "What is your favorite part of your daily routine?",
+        "What is one trend you secretly or openly like?",
+        "What kind of photos do you take the most on your phone?",
+        "What is one thing you want more of in your life right now?"
+      ],
+      gettingReal: [
+        "What usually helps you feel comfortable around someone?",
+        "What makes you feel genuinely appreciated?",
+        "What do you value most in a friendship?",
+        "What kind of connection are you usually drawn to?",
+        "What do you notice first about someone's energy?",
+        "What helps you trust someone?",
+        "What kind of compliments mean the most to you?",
+        "What is one lesson life taught you the hard way?",
+        "What do you wish more people understood about you?",
+        "What kind of people make you feel safe to be yourself?",
+        "What is something you have grown out of?",
+        "What kind of conversations do you enjoy most?",
+        "What is one belief you have changed your mind about over time?",
+        "What do you tend to guard about yourself when meeting new people?",
+        "What does emotional maturity mean to you?",
+        "What kind of attention feels meaningful to you?",
+        "What is something you have had to teach yourself recently?",
+        "What does loyalty mean to you?",
+        "What is one insecurity that affects you less now than it used to?",
+        "How do you know when you really click with someone?",
+        "What kind of support do you appreciate most from others?",
+        "What is one thing that can quietly damage a connection for you?",
+        "What kind of people bring out the best in you?",
+        "What kind of misunderstanding happens to you a lot?",
+        "What is something you take seriously that others might overlook?",
+        "When do you feel most seen by someone?",
+        "What kind of boundaries have become important to you?",
+        "What does a healthy relationship look like to you?",
+        "What is one thing you are still learning about yourself?",
+        "What kind of reassurance do you respond to best?",
+        "What do people assume about you too quickly?",
+        "What kind of presence makes you feel calm?",
+        "What helps you open up emotionally?",
+        "What is something you admire in people beyond looks or status?",
+        "What kind of connection do you think is rare?",
+        "What makes someone emotionally attractive to you?",
+        "What part of your personality took time to grow into?",
+        "What does consistency mean to you in a connection?",
+        "What kind of effort stands out to you the most?",
+        "What is one area of your life you are trying to improve right now?"
+      ],
+      deepEnd: [
+        "What do you think people are really searching for in life?",
+        "What version of yourself are you still becoming?",
+        "What do you think love is supposed to feel like?",
+        "What fear has shaped you the most?",
+        "What truth about yourself took the longest to accept?",
+        "What makes someone feel truly known by another person?",
+        "What matters more to you right now, peace or passion?",
+        "What do people misunderstand about strength?",
+        "What part of life feels the most meaningful to you right now?",
+        "What do you think your younger self would admire about you?",
+        "What is something you had to lose to understand your value?",
+        "What do you think intimacy really is?",
+        "What kind of pain changes a person the most?",
+        "What makes someone unforgettable to you?",
+        "What do you think people hide behind the most?",
+        "What is something you are still healing from in your own way?",
+        "What do you think life is trying to teach you right now?",
+        "What does freedom mean to you personally?",
+        "What kind of connection do you think changes a person forever?",
+        "What do people avoid admitting to themselves?",
+        "What has made you feel most alive in your life?",
+        "What is the difference between being wanted and being valued?",
+        "What part of yourself do you protect the most?",
+        "What makes life feel empty even when it looks full?",
+        "What do people owe to themselves?",
+        "What does it mean to live authentically to you?",
+        "What is harder for most people, being vulnerable or being honest?",
+        "What belief helps you get through hard seasons?",
+        "What do people learn too late about relationships?",
+        "What kind of legacy matters to you most?",
+        "What do your patterns say about what you need?",
+        "What question do you think people should ask themselves more often?",
+        "What makes someone emotionally safe?",
+        "What changes when someone finally knows their worth?",
+        "What does being chosen mean to you?",
+        "What do people confuse for happiness?",
+        "What part of yourself are you learning to accept more fully?",
+        "What makes two people deeply compatible?",
+        "What is the bravest kind of honesty?",
+        "What is worth fighting for in life?"
+      ]
+    };
+
+    const categoryButtons = document.querySelectorAll(".category-btn");
+    const generateBtn = document.getElementById("generateBtn");
+    const copyBtn = document.getElementById("copyBtn");
+    const categoryLabel = document.getElementById("categoryLabel");
+    const questionText = document.getElementById("questionText");
+    const questionCounter = document.getElementById("questionCounter");
+    const copiedMessage = document.getElementById("copiedMessage");
+
+    let selectedCategory = "justVibes";
+    let usedQuestions = {
+      justVibes: [],
+      gettingReal: [],
+      deepEnd: []
+    };
+    let currentQuestion = "";
+
+    function getCategoryName(category) {
+      if (category === "justVibes") return "Just Vibes";
+      if (category === "gettingReal") return "Getting Real";
+      if (category === "deepEnd") return "Deep End";
+      return "";
+    }
+
+    function updateCounter() {
+      const usedCount = usedQuestions[selectedCategory].length;
+      const totalCount = questions[selectedCategory].length;
+      questionCounter.textContent = `${usedCount} / ${totalCount}`;
+    }
+
+    function getRandomQuestion(category) {
+      const allQuestions = questions[category];
+
+      if (usedQuestions[category].length === allQuestions.length) {
+        usedQuestions[category] = [];
+      }
+
+      let randomIndex;
+      do {
+        randomIndex = Math.floor(Math.random() * allQuestions.length);
+      } while (usedQuestions[category].includes(randomIndex));
+
+      usedQuestions[category].push(randomIndex);
+      return allQuestions[randomIndex];
+    }
+
+    function setActiveCategory(button) {
+      categoryButtons.forEach(btn => btn.classList.remove("active"));
+      button.classList.add("active");
+      selectedCategory = button.dataset.category;
+      categoryLabel.textContent = getCategoryName(selectedCategory);
+      questionText.textContent = `You selected ${getCategoryName(selectedCategory)}. Tap “Generate Question” to begin.`;
+      copiedMessage.textContent = "";
+      updateCounter();
+    }
+
+    categoryButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        setActiveCategory(button);
+      });
+    });
+
+    generateBtn.addEventListener("click", () => {
+      currentQuestion = getRandomQuestion(selectedCategory);
+      categoryLabel.textContent = getCategoryName(selectedCategory);
+      questionText.textContent = currentQuestion;
+      copiedMessage.textContent = "";
+      updateCounter();
+    });
+
+    copyBtn.addEventListener("click", async () => {
+      if (!currentQuestion) {
+        copiedMessage.textContent = "Generate a question first.";
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(currentQuestion);
+        copiedMessage.textContent = "Question copied.";
+      } catch (error) {
+        copiedMessage.textContent = "Copy failed. Try again.";
+      }
+    });
+
+    updateCounter();
+  </script>
+</body>
+</html>
