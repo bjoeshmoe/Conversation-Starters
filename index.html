@@ -15,7 +15,7 @@
       --card: #0a0a0a;
       --border: #ffffff;
       --text: #ffffff;
-      --muted: #a3a3a3;
+      --muted: #9f9f9f;
       --hover: #111111;
     }
 
@@ -36,27 +36,94 @@
       padding: 20px;
     }
 
-    .app {
+    .shell {
       width: 100%;
-      max-width: 700px;
+      max-width: 760px;
+    }
+
+    .screen {
+      display: none;
+      width: 100%;
       border: 1px solid var(--border);
       border-radius: 24px;
-      padding: 24px;
       background: var(--card);
+      padding: 24px;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .intro-screen {
+      text-align: center;
+      padding: 42px 24px;
+    }
+
+    .intro-kicker {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      margin-bottom: 18px;
     }
 
     h1 {
       margin: 0;
-      font-size: clamp(2.1rem, 4vw, 3rem);
-      letter-spacing: -0.04em;
-      line-height: 1;
+      font-size: clamp(2.3rem, 5vw, 4rem);
+      line-height: 0.98;
+      letter-spacing: -0.05em;
+      font-weight: 700;
+    }
+
+    .intro-subtitle,
+    .subtitle {
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .intro-subtitle {
+      max-width: 520px;
+      margin: 18px auto 28px;
+      font-size: 1rem;
+    }
+
+    .enter-btn,
+    .generate-btn {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: #000000;
+      padding: 16px;
+      border-radius: 16px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s ease, transform 0.15s ease;
+    }
+
+    .enter-btn:hover,
+    .generate-btn:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+
+    .intro-footnote {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .app-screen {
+      padding: 24px;
+    }
+
+    .app-top {
+      margin-bottom: 22px;
     }
 
     .subtitle {
-      margin: 10px 0 24px;
-      color: var(--muted);
+      margin: 10px 0 0;
       font-size: 1rem;
-      line-height: 1.5;
     }
 
     .categories {
@@ -92,60 +159,64 @@
       border: 1px solid var(--border);
       border-radius: 20px;
       padding: 22px;
-      min-height: 240px;
-      margin-bottom: 20px;
+      min-height: 310px;
+      margin-bottom: 18px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       background: #000000;
     }
 
+    .question-meta {
+      margin-bottom: 14px;
+    }
+
     .category-label {
       font-size: 0.78rem;
       color: var(--muted);
-      margin-bottom: 12px;
       text-transform: uppercase;
       letter-spacing: 0.14em;
+      margin-bottom: 12px;
     }
 
     .question-text {
-      font-size: clamp(1.3rem, 2.8vw, 1.8rem);
-      line-height: 1.5;
+      font-size: clamp(1.2rem, 2.8vw, 1.8rem);
+      line-height: 1.55;
+      letter-spacing: -0.02em;
+      white-space: pre-line;
       opacity: 1;
-      transition: opacity 0.35s ease;
+      transform: translateY(0);
+      transition: opacity 0.35s ease, transform 0.35s ease;
     }
 
     .question-text.fade-out {
       opacity: 0;
+      transform: translateY(8px);
     }
 
     .question-text.fade-in {
       opacity: 1;
+      transform: translateY(0);
     }
 
     .counter {
       font-size: 0.82rem;
       color: var(--muted);
-      margin-top: 16px;
+      margin-top: 18px;
       text-align: right;
     }
 
-    .generate-btn {
-      width: 100%;
-      border: 1px solid var(--border);
-      background: #ffffff;
-      color: #000000;
-      padding: 16px;
-      border-radius: 16px;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: opacity 0.2s ease, transform 0.15s ease;
+    .button-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
-    .generate-btn:hover {
-      opacity: 0.92;
-      transform: translateY(-1px);
+    .button-hint {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.4;
     }
 
     @media (max-width: 640px) {
@@ -153,9 +224,14 @@
         padding: 16px;
       }
 
-      .app {
+      .screen,
+      .app-screen {
         padding: 18px;
         border-radius: 20px;
+      }
+
+      .intro-screen {
+        padding: 34px 18px;
       }
 
       .categories {
@@ -163,31 +239,54 @@
       }
 
       .question-box {
-        min-height: 260px;
+        min-height: 340px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <h1>Skip the Small Talk</h1>
-    <p class="subtitle">Pick a vibe and start a better conversation.</p>
-
-    <div class="categories">
-      <button class="category-btn active" data-category="justVibes">Just Vibes</button>
-      <button class="category-btn" data-category="gettingReal">Getting Real</button>
-      <button class="category-btn" data-category="deepEnd">Deep End</button>
-    </div>
-
-    <div class="question-box">
-      <div>
-        <div class="category-label" id="categoryLabel">Just Vibes</div>
-        <div class="question-text" id="questionText">Tap "Generate Question" to begin.</div>
+  <div class="shell">
+    <section class="screen intro-screen active" id="introScreen">
+      <div class="intro-kicker">Conversation App</div>
+      <h1>Skip the Small Talk</h1>
+      <p class="intro-subtitle">
+        Better questions. Better conversations. Pick a vibe, break the ice, and go deeper when it feels right.
+      </p>
+      <button class="enter-btn" id="enterBtn">Enter</button>
+      <div class="intro-footnote">
+        Great for dates, friendships, road trips, and late-night talks.
       </div>
-      <div class="counter" id="questionCounter">0 / 40</div>
-    </div>
+    </section>
 
-    <button class="generate-btn" id="generateBtn">Generate Question</button>
+    <section class="screen app-screen" id="appScreen">
+      <div class="app-top">
+        <h1>Skip the Small Talk</h1>
+        <p class="subtitle">Pick a vibe and start a better conversation.</p>
+      </div>
+
+      <div class="categories">
+        <button class="category-btn active" data-category="justVibes">Just Vibes</button>
+        <button class="category-btn" data-category="gettingReal">Getting Real</button>
+        <button class="category-btn" data-category="deepEnd">Deep End</button>
+      </div>
+
+      <div class="question-box">
+        <div>
+          <div class="question-meta">
+            <div class="category-label" id="categoryLabel">Just Vibes</div>
+          </div>
+          <div class="question-text" id="questionText"></div>
+        </div>
+        <div class="counter" id="questionCounter">0 / 50</div>
+      </div>
+
+      <div class="button-wrap">
+        <button class="generate-btn" id="generateBtn">Generate Question</button>
+        <div class="button-hint" id="buttonHint">
+          Start light, then go deeper when the moment feels right.
+        </div>
+      </div>
+    </section>
   </div>
 
   <script>
@@ -232,7 +331,17 @@
         "What is your favorite part of your daily routine?",
         "What is one trend you secretly or openly like?",
         "What kind of photos do you take the most on your phone?",
-        "What is one thing you want more of in your life right now?"
+        "What is one thing you want more of in your life right now?",
+        "What is your favorite kind of laugh?",
+        "What is a small thing that makes you feel instantly comfortable?",
+        "What kind of outings do you enjoy most with other people?",
+        "What is a smell that brings back a good memory for you?",
+        "What kind of compliments actually land with you?",
+        "What is something you could happily spend a whole day doing?",
+        "What kind of atmosphere makes you feel most like yourself?",
+        "What is your favorite kind of conversation to have when you first meet someone?",
+        "What makes a hangout feel genuinely fun to you?",
+        "What is something simple that makes life feel a little better?"
       ],
       gettingReal: [
         "What usually helps you feel comfortable around someone?",
@@ -274,7 +383,17 @@
         "What part of your personality took time to grow into?",
         "What does consistency mean to you in a connection?",
         "What kind of effort stands out to you the most?",
-        "What is one area of your life you are trying to improve right now?"
+        "What is one area of your life you are trying to improve right now?",
+        "What does feeling emotionally safe look like for you?",
+        "What kind of honesty do you appreciate most from other people?",
+        "What do you need most when you are having a hard time?",
+        "What part of your personality do people earn access to over time?",
+        "What have you become less willing to tolerate as you have grown?",
+        "What does being intentional in a relationship mean to you?",
+        "What kind of apology feels real to you?",
+        "What is something you are proud of that people do not always see?",
+        "What does showing up for someone really mean to you?",
+        "What kind of connection are you hoping to build in this season of your life?"
       ],
       deepEnd: [
         "What do you think people are really searching for in life?",
@@ -316,8 +435,39 @@
         "What part of yourself are you learning to accept more fully?",
         "What makes two people deeply compatible?",
         "What is the bravest kind of honesty?",
-        "What is worth fighting for in life?"
+        "What is worth fighting for in life?",
+        "What wound has taught you the most about yourself?",
+        "What is something you wish more people asked you about?",
+        "What part of your story still feels tender when you talk about it?",
+        "When have you felt the most alone, even if people were around?",
+        "What does being loved well actually look like to you?",
+        "What has broken your heart in a way that changed you?",
+        "What are you still trying to make peace with?",
+        "What do you need more of emotionally than you usually ask for?",
+        "What part of you is strongest because of what you survived?",
+        "What truth do you think could set you freer if you fully accepted it?"
       ]
+    };
+
+    const descriptions = {
+      justVibes: {
+        title: "Just Vibes",
+        body: "Light, easy questions to break the ice and get the conversation moving."
+      },
+      gettingReal: {
+        title: "Getting Real",
+        body: "More personal questions that help build trust, openness, and connection."
+      },
+      deepEnd: {
+        title: "Deep End",
+        body: "Meaningful, emotional, and reflective questions for when you want to go deeper."
+      }
+    };
+
+    const hints = {
+      justVibes: "Keep it easy. Build comfort first.",
+      gettingReal: "A little more honesty. A little more connection.",
+      deepEnd: "Go deeper when the energy feels mutual."
     };
 
     let selectedCategory = "justVibes";
@@ -327,21 +477,27 @@
       deepEnd: []
     };
 
+    const introScreen = document.getElementById("introScreen");
+    const appScreen = document.getElementById("appScreen");
+    const enterBtn = document.getElementById("enterBtn");
+
     const categoryButtons = document.querySelectorAll(".category-btn");
     const questionText = document.getElementById("questionText");
     const categoryLabel = document.getElementById("categoryLabel");
     const questionCounter = document.getElementById("questionCounter");
     const generateBtn = document.getElementById("generateBtn");
+    const buttonHint = document.getElementById("buttonHint");
 
     function getCategoryName(category) {
-      if (category === "justVibes") return "Just Vibes";
-      if (category === "gettingReal") return "Getting Real";
-      if (category === "deepEnd") return "Deep End";
-      return "";
+      return descriptions[category].title;
     }
 
     function updateCounter() {
       questionCounter.textContent = `${usedQuestions[selectedCategory].length} / ${questions[selectedCategory].length}`;
+    }
+
+    function updateHint() {
+      buttonHint.textContent = hints[selectedCategory];
     }
 
     function getRandomQuestion(category) {
@@ -370,9 +526,23 @@
 
         setTimeout(() => {
           questionText.classList.remove("fade-in");
-        }, 250);
+        }, 350);
       }, 200);
     }
+
+    function showCategoryDescription(category) {
+      const title = descriptions[category].title;
+      const body = descriptions[category].body;
+      animateQuestionChange(`${title}\n\n${body}`);
+    }
+
+    enterBtn.addEventListener("click", () => {
+      introScreen.classList.remove("active");
+      appScreen.classList.add("active");
+      showCategoryDescription(selectedCategory);
+      updateCounter();
+      updateHint();
+    });
 
     categoryButtons.forEach((button) => {
       button.addEventListener("click", () => {
@@ -381,8 +551,9 @@
 
         selectedCategory = button.dataset.category;
         categoryLabel.textContent = getCategoryName(selectedCategory);
-        animateQuestionChange(`You selected ${getCategoryName(selectedCategory)}. Tap "Generate Question" to begin.`);
+        showCategoryDescription(selectedCategory);
         updateCounter();
+        updateHint();
       });
     });
 
@@ -392,7 +563,10 @@
       updateCounter();
     });
 
+    categoryLabel.textContent = getCategoryName(selectedCategory);
+    questionText.textContent = `${descriptions[selectedCategory].title}\n\n${descriptions[selectedCategory].body}`;
     updateCounter();
+    updateHint();
   </script>
 </body>
 </html>
