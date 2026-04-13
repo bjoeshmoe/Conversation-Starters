@@ -6,22 +6,29 @@
   <title>Skip the Small Talk</title>
 
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     :root {
-      --bg: #000;
+      --bg: #000000;
       --card: #0a0a0a;
-      --border: #fff;
-      --text: #fff;
-      --muted: #aaa;
-      --hover: #111;
+      --border: #ffffff;
+      --text: #ffffff;
+      --muted: #a3a3a3;
+      --hover: #111111;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100%;
     }
 
     body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, system-ui, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -40,13 +47,16 @@
 
     h1 {
       margin: 0;
-      font-size: 2.5rem;
-      letter-spacing: -1px;
+      font-size: clamp(2.1rem, 4vw, 3rem);
+      letter-spacing: -0.04em;
+      line-height: 1;
     }
 
     .subtitle {
-      margin: 10px 0 25px;
+      margin: 10px 0 24px;
       color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.5;
     }
 
     .categories {
@@ -59,73 +69,105 @@
     .category-btn {
       border: 1px solid var(--border);
       background: transparent;
-      color: white;
-      padding: 12px;
+      color: var(--text);
+      padding: 13px 12px;
       border-radius: 14px;
       cursor: pointer;
+      font-size: 0.95rem;
       font-weight: 600;
+      transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+    }
+
+    .category-btn:hover {
+      background: var(--hover);
+      transform: translateY(-1px);
     }
 
     .category-btn.active {
-      background: white;
-      color: black;
+      background: #ffffff;
+      color: #000000;
     }
 
     .question-box {
       border: 1px solid var(--border);
       border-radius: 20px;
       padding: 22px;
-      min-height: 220px;
+      min-height: 240px;
       margin-bottom: 20px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      background: #000000;
     }
 
     .category-label {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: var(--muted);
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.14em;
     }
 
     .question-text {
-      font-size: 1.4rem;
+      font-size: clamp(1.3rem, 2.8vw, 1.8rem);
       line-height: 1.5;
+      opacity: 1;
+      transition: opacity 0.35s ease;
+    }
+
+    .question-text.fade-out {
+      opacity: 0;
+    }
+
+    .question-text.fade-in {
+      opacity: 1;
     }
 
     .counter {
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       color: var(--muted);
-      margin-top: 10px;
+      margin-top: 16px;
       text-align: right;
     }
 
     .generate-btn {
       width: 100%;
       border: 1px solid var(--border);
-      background: white;
-      color: black;
+      background: #ffffff;
+      color: #000000;
       padding: 16px;
       border-radius: 16px;
       font-size: 1rem;
       font-weight: 700;
       cursor: pointer;
+      transition: opacity 0.2s ease, transform 0.15s ease;
     }
 
     .generate-btn:hover {
-      opacity: 0.9;
+      opacity: 0.92;
+      transform: translateY(-1px);
     }
 
     @media (max-width: 640px) {
+      body {
+        padding: 16px;
+      }
+
+      .app {
+        padding: 18px;
+        border-radius: 20px;
+      }
+
       .categories {
         grid-template-columns: 1fr;
+      }
+
+      .question-box {
+        min-height: 260px;
       }
     }
   </style>
 </head>
-
 <body>
   <div class="app">
     <h1>Skip the Small Talk</h1>
@@ -140,20 +182,17 @@
     <div class="question-box">
       <div>
         <div class="category-label" id="categoryLabel">Just Vibes</div>
-        <div class="question-text" id="questionText">
-          Tap "Generate Question" to begin.
-        </div>
+        <div class="question-text" id="questionText">Tap "Generate Question" to begin.</div>
       </div>
       <div class="counter" id="questionCounter">0 / 40</div>
     </div>
 
-    <!-- 🔥 MOVED TO BOTTOM -->
     <button class="generate-btn" id="generateBtn">Generate Question</button>
   </div>
 
   <script>
     const questions = {
-      justVibes: [...Array(40).keys()].map((i, idx) => [
+      justVibes: [
         "What kind of first impression do people usually get from you?",
         "What is your ideal way to spend a free weekend?",
         "What kind of music do you always come back to?",
@@ -194,9 +233,8 @@
         "What is one trend you secretly or openly like?",
         "What kind of photos do you take the most on your phone?",
         "What is one thing you want more of in your life right now?"
-      ][idx]),
-
-      gettingReal: [...Array(40).keys()].map((i, idx) => [
+      ],
+      gettingReal: [
         "What usually helps you feel comfortable around someone?",
         "What makes you feel genuinely appreciated?",
         "What do you value most in a friendship?",
@@ -237,9 +275,8 @@
         "What does consistency mean to you in a connection?",
         "What kind of effort stands out to you the most?",
         "What is one area of your life you are trying to improve right now?"
-      ][idx]),
-
-      deepEnd: [...Array(40).keys()].map((i, idx) => [
+      ],
+      deepEnd: [
         "What do you think people are really searching for in life?",
         "What version of yourself are you still becoming?",
         "What do you think love is supposed to feel like?",
@@ -280,57 +317,80 @@
         "What makes two people deeply compatible?",
         "What is the bravest kind of honesty?",
         "What is worth fighting for in life?"
-      ][idx])
+      ]
     };
 
     let selectedCategory = "justVibes";
-    let used = { justVibes: [], gettingReal: [], deepEnd: [] };
+    let usedQuestions = {
+      justVibes: [],
+      gettingReal: [],
+      deepEnd: []
+    };
 
-    const buttons = document.querySelectorAll(".category-btn");
-    const text = document.getElementById("questionText");
-    const label = document.getElementById("categoryLabel");
-    const counter = document.getElementById("questionCounter");
+    const categoryButtons = document.querySelectorAll(".category-btn");
+    const questionText = document.getElementById("questionText");
+    const categoryLabel = document.getElementById("categoryLabel");
+    const questionCounter = document.getElementById("questionCounter");
+    const generateBtn = document.getElementById("generateBtn");
 
-    function getName(cat) {
-      return cat === "justVibes" ? "Just Vibes" :
-             cat === "gettingReal" ? "Getting Real" : "Deep End";
+    function getCategoryName(category) {
+      if (category === "justVibes") return "Just Vibes";
+      if (category === "gettingReal") return "Getting Real";
+      if (category === "deepEnd") return "Deep End";
+      return "";
     }
 
     function updateCounter() {
-      counter.textContent = `${used[selectedCategory].length} / 40`;
+      questionCounter.textContent = `${usedQuestions[selectedCategory].length} / ${questions[selectedCategory].length}`;
     }
 
-    function randomQuestion() {
-      let arr = questions[selectedCategory];
+    function getRandomQuestion(category) {
+      const categoryQuestions = questions[category];
 
-      if (used[selectedCategory].length === arr.length) {
-        used[selectedCategory] = [];
+      if (usedQuestions[category].length === categoryQuestions.length) {
+        usedQuestions[category] = [];
       }
 
-      let i;
+      let randomIndex;
       do {
-        i = Math.floor(Math.random() * arr.length);
-      } while (used[selectedCategory].includes(i));
+        randomIndex = Math.floor(Math.random() * categoryQuestions.length);
+      } while (usedQuestions[category].includes(randomIndex));
 
-      used[selectedCategory].push(i);
-      return arr[i];
+      usedQuestions[category].push(randomIndex);
+      return categoryQuestions[randomIndex];
     }
 
-    buttons.forEach(btn => {
-      btn.onclick = () => {
-        buttons.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        selectedCategory = btn.dataset.category;
-        label.textContent = getName(selectedCategory);
-        text.textContent = `You selected ${getName(selectedCategory)}. Tap Generate.`;
+    function animateQuestionChange(newText) {
+      questionText.classList.add("fade-out");
+
+      setTimeout(() => {
+        questionText.textContent = newText;
+        questionText.classList.remove("fade-out");
+        questionText.classList.add("fade-in");
+
+        setTimeout(() => {
+          questionText.classList.remove("fade-in");
+        }, 250);
+      }, 200);
+    }
+
+    categoryButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        categoryButtons.forEach((btn) => btn.classList.remove("active"));
+        button.classList.add("active");
+
+        selectedCategory = button.dataset.category;
+        categoryLabel.textContent = getCategoryName(selectedCategory);
+        animateQuestionChange(`You selected ${getCategoryName(selectedCategory)}. Tap "Generate Question" to begin.`);
         updateCounter();
-      };
+      });
     });
 
-    document.getElementById("generateBtn").onclick = () => {
-      text.textContent = randomQuestion();
+    generateBtn.addEventListener("click", () => {
+      const nextQuestion = getRandomQuestion(selectedCategory);
+      animateQuestionChange(nextQuestion);
       updateCounter();
-    };
+    });
 
     updateCounter();
   </script>
